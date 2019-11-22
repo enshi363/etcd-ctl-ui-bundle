@@ -1,0 +1,64 @@
+version: "3.7"
+
+services:
+  etcd-01:
+    image: quay.io/coreos/etcd:v3.4.3 
+    hostname: etcd-01
+    ports:
+      - 12379:2379
+      - 12380:2380
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_NAME=etcd-01
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd-01:2380
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd-01:2379
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster
+      - ETCD_INITIAL_CLUSTER=etcd-01=http://etcd-01:2380,etcd-02=http://etcd-02:2380,etcd-03=http://etcd-03:2380
+      - ETCD_INITIAL_CLUSTER_STATE=new
+      - ETCD_ELECTION_TIMEOUT=1250
+  etcd-02:
+    image: quay.io/coreos/etcd:v3.4.3 
+    hostname: etcd-02
+    ports:
+      - 22379:2379
+      - 22380:2380
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_NAME=etcd-02
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd-02:2380
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd-02:2379
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster
+      - ETCD_INITIAL_CLUSTER=etcd-01=http://etcd-01:2380,etcd-02=http://etcd-02:2380,etcd-03=http://etcd-03:2380
+      - ETCD_ELECTION_TIMEOUT=1250
+      - ETCD_INITIAL_CLUSTER_STATE=new
+  etcd-03:
+    image: quay.io/coreos/etcd:v3.4.3 
+    hostname: etcd-03
+    ports:
+      - 32379:2379
+      - 32380:2380
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_NAME=etcd-03
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd-03:2380
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd-03:2379
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster
+      - ETCD_ELECTION_TIMEOUT=1250
+      - ETCD_INITIAL_CLUSTER=etcd-01=http://etcd-01:2380,etcd-02=http://etcd-02:2380,etcd-03=http://etcd-03:2380
+      - ETCD_INITIAL_CLUSTER_STATE=new
+  etcd-web:
+    image: alpine 
+    hostname: etcd-web
+    ports:
+      - 8080:8080
+    tty: true
+    stdin_open: true
+    environment:
+      - ENDPOINTS=http://etcd-01:2379,http://etcd-02:2379,http://etcd-03:2379
+    command: /bin/sh

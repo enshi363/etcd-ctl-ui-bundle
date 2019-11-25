@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +19,6 @@ func (handler *httpHanlder) ClusterMembers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	memberjson, _ := json.Marshal(resp.Members)
-	c.JSON(http.StatusOK, gin.H{"members": string(memberjson)})
+	//memberjson, _ := json.Marshal(resp.Members)
+	c.JSON(http.StatusOK, gin.H{"members": resp.Members})
 }

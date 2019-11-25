@@ -1,9 +1,11 @@
 package main
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 type AuthMiddleWare struct {
@@ -16,9 +18,13 @@ var authMiddleware = &AuthMiddleWare{
 
 func (auth *AuthMiddleWare) Verify() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenString := c.GetHeader("Athorization")
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			return []byte("AllYourBase"), nil
+		tokenString := c.GetHeader("Authorization")
+		if tokenString == "" {
+			c.AbortWithError(401, ERROR_TOKEN_INVALID)
+			return
+		}
+		token, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+			return auth.Secret, nil
 		})
 		if claims, ok := token.Claims.(*jwt.StandardClaims); ok && token.Valid {
 			c.Set("user.name", claims.Issuer)
@@ -26,15 +32,19 @@ func (auth *AuthMiddleWare) Verify() gin.HandlerFunc {
 
 		} else if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-				c.AbortWithError(401, ERROR_TOKEN_INVALID)
+				c.JSON(http.StatusUnauthorized, gin.H{"error": ERROR_TOKEN_INVALID.Error()})
+				return
 			} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
 				// Token is either expired or not active yet
-				c.AbortWithError(401, ERROR_TOKEN_TIME_INVALID)
+				c.JSON(http.StatusUnauthorized, gin.H{"error": ERROR_TOKEN_TIME_INVALID.Error()})
+				return
 			} else {
-				c.AbortWithError(401, ERROR_TOKEN_INVALID)
+				c.JSON(http.StatusUnauthorized, gin.H{"error": ERROR_TOKEN_INVALID.Error()})
+				return
 			}
 		} else {
-			c.AbortWithError(401, ERROR_TOKEN_INVALID)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": ERROR_TOKEN_INVALID.Error()})
+			return
 		}
 		c.Next()
 	}
@@ -43,7 +53,7 @@ func (auth *AuthMiddleWare) Verify() gin.HandlerFunc {
 func (auth *AuthMiddleWare) MakeCredential(username, subject string) (tokenString string, err error) {
 
 	claims := &jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(7200 * time.Second).Unix(),
+		ExpiresAt: time.Now().Add(86400 * time.Second).Unix(),
 		NotBefore: time.Now().Add(-5 * time.Minute).Unix(),
 		IssuedAt:  time.Now().Unix(),
 		Issuer:    username,

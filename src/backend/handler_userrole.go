@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -116,8 +115,8 @@ func (handler *httpHanlder) GetRoleList(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	rolesJson, _ := json.Marshal(resp.Roles)
-	c.JSON(http.StatusOK, gin.H{"roles": string(rolesJson)})
+	//rolesJson, _ := json.Marshal(resp.Roles)
+	c.JSON(http.StatusOK, gin.H{"roles": (resp.Roles)})
 }
 
 func (handler *httpHanlder) GetRole(c *gin.Context) {
@@ -135,6 +134,6 @@ func (handler *httpHanlder) GetRole(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	permJson, _ := json.Marshal(resp.Perm)
-	c.JSON(http.StatusOK, gin.H{"permissions": string(permJson)})
+	//permJson, _ := json.Marshal(resp.Perm)
+	c.JSON(http.StatusOK, gin.H{"permissions": (resp.Perm)})
 }

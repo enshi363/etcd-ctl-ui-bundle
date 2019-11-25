@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"time"
 
@@ -72,6 +71,6 @@ func (handler *httpHanlder) GetConfigList(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	data, _ := json.Marshal(resp)
-	c.JSON(http.StatusOK, gin.H{"data": string(data)})
+	//data, _ := json.Marshal(resp)
+	c.JSON(http.StatusOK, gin.H{"data": (resp)})
 }

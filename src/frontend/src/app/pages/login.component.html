@@ -1,0 +1,40 @@
+<div class="login-container">
+  <div class="logo"> 
+      <img src="https://cdn.freebiesupply.com/logos/large/2x/etcd-logo-png-transparent.png" alt="" style="width:90%;">
+  </div>
+  <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group [nzPrefix]="prefixUser" nzSize="large">
+          <input type="text" nz-input formControlName="username" placeholder="UserName">
+        </nz-input-group>
+        <ng-template #prefixUser><i nz-icon nzType="user" nzTheme="outline"></i></ng-template>
+        <nz-form-explain *ngIf="validateForm.get('username').dirty && validateForm.get('username').errors">
+          <ng-container *ngIf="validateForm.get('username').hasError('required')">
+            请输入手机号
+          </ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group [nzPrefix]="prefixPassword" nzSize="large">
+          <input type="text" nz-input formControlName="password" placeholder="Password">
+        </nz-input-group>
+        <ng-template #prefixPassword><i nz-icon nzType="lock"></i></ng-template>
+        <nz-form-explain *ngIf="validateForm.get('password').dirty && validateForm.get('password').errors">
+          <ng-container *ngIf="validateForm.get('password').hasError('required')">
+            请输入密码
+          </ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+
+        <button nz-button class="login-form-button" nzSize="large" [nzType]="'primary'">SignIn</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  <div style="clear:both;"></div>
+</div>

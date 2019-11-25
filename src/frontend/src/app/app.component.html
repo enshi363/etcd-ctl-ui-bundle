@@ -1,0 +1,22 @@
+<nz-layout>
+    <nz-header>
+        <div class="logo"></div>
+        <ul nz-menu nzTheme="dark" nzMode="horizontal">
+            <li nz-menu-item><i nz-icon nzType="cluster" nzTheme="outline"></i>Status</li>
+            <li nz-menu-item><i nz-icon nzType="file-protect" nzTheme="outline"></i>KVs</li>
+            <li nz-submenu nzTitle="Settings" nzIcon="setting">
+                <ul>
+                    <li nz-menu-item><i nz-icon nzType="user" nzTheme="outline"></i>User Setting</li>
+                    <li nz-menu-item><i nz-icon nzType="team" nzTheme="outline"></i>Role Setting</li>
+                </ul>
+            </li>
+        </ul>
+    </nz-header>
+    <nz-content>
+        <div class="inner-content">
+            <router-outlet></router-outlet>
+        </div>
+
+    </nz-content>
+    <nz-footer>Ant Design ©2019 Implement By Angular</nz-footer>
+</nz-layout>

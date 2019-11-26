@@ -1,0 +1,15 @@
+<nz-page-header (nzBack)="onBack()" nzBackIcon nzTitle="Cluster Status" nzSubtitle="show cluster members"> </nz-page-header>
+<nz-skeleton [nzActive]="true" [nzLoading]="loading">
+  <div nz-row [nzGutter]="8">
+    <div nz-col [nzSpan]="8" *ngFor="let member of clusters">
+        <nz-card nzTitle="{{member.name}}">
+            <p><b>ID:</b></p>
+            <p>{{member.ID}}</p>
+            <p><b>peerURLS:</b></p>
+            <p *ngFor="let peers of member.peerURLs">{{peers}}</p>
+            <p><b>clientURLS:</b></p>
+            <p *ngFor="let peers of member.clientURLs">{{peers}}</p>
+        </nz-card>
+    </div>
+  </div>
+</nz-skeleton>

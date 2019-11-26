@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {LoginComponent} from './pages/login.component';
+import * as pages from './pages';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: pages.LoginComponent },
+  { path: 'status', component: pages.ClusterComponent },
+  { path: 'settings/role', component: pages.RoleComponent },
   { path:  '', redirectTo : 'login', pathMatch: 'full'},
 ];
 

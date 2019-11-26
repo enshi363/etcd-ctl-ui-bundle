@@ -1,0 +1,20 @@
+<nz-page-header (nzBack)="onBack()" nzBackIcon nzTitle="Roles" nzSubtitle="You can manage roles"> </nz-page-header>
+
+<nz-skeleton [nzActive]="true" [nzLoading]="loading">
+  <div nz-row [nzGutter]="20">
+    <div nz-col [nzSpan]="4" *ngFor="let role of roles">
+      <nz-card [nzActions]="[actionEdit, actionTrash]">
+        <nz-card-meta [nzAvatar]="avatarTemplate" nzTitle="{{role}}" nzDescription=""></nz-card-meta>
+      </nz-card>
+      <ng-template #avatarTemplate>
+        <i nz-icon nzType="team" nzTheme="outline"></i>
+      </ng-template>
+      <ng-template #actionEdit>
+        <i nz-icon nzType="edit" (click)="editRole(role)"></i>
+      </ng-template>
+      <ng-template #actionTrash>
+        <i nz-icon nzType="delete"></i>
+      </ng-template>
+    </div>
+  </div>
+</nz-skeleton>

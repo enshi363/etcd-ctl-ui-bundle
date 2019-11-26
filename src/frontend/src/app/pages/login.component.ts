@@ -8,13 +8,16 @@ import {
 } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 
-// import { AuthService, loginData } from './services/auth.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   // selector: 'login-root',
   templateUrl: './login.component.html',
   styles: [
     `
+      .login-error{
+        color:red;
+      }
       .login-form {
         float: left;
         display: block;
@@ -45,15 +48,16 @@ import { NzNotificationService } from 'ng-zorro-antd';
 export class LoginComponent implements OnInit, OnDestroy {
   isLogin = false;
   validateForm: FormGroup;
-  countdown = 0;
-  timer;
+  errors:string;
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private notification: NzNotificationService,
+    private authService: AuthService,
   ) {
   }
   submitForm(): void {
+    this.errors = ""
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
@@ -61,6 +65,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.validateForm.invalid) {
       return;
     }
+    this.authService.login(this.validateForm.get("username").value,this.validateForm.get("password").value).subscribe((res)=>{
+      this.router.navigate(['/status']);
+    },(err)=>{
+      this.errors = err.error.error
+    })
   }
 
 
@@ -71,7 +80,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy(): void {
-    clearInterval(this.timer);
-    this.timer = null;
+    
   }
 }

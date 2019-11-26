@@ -1,0 +1,20 @@
+<nz-table #basicTable [nzData]="dataSet">
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Key Range End</th>
+      <th>PermissionType</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of basicTable.data">
+      <td>{{data.key}}</td>
+      <td>{{data.range_end}}</td>
+      <td>{{data.permType}}</td>
+      <td>
+        <a>Delete</a>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

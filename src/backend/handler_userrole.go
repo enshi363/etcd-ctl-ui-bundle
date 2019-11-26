@@ -134,6 +134,5 @@ func (handler *httpHanlder) GetRole(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	//permJson, _ := json.Marshal(resp.Perm)
-	c.JSON(http.StatusOK, gin.H{"permissions": (resp.Perm)})
+	c.JSON(http.StatusOK, gin.H{"permissions": resp})
 }

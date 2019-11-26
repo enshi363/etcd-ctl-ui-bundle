@@ -76,7 +76,7 @@ func (env *Environment) GetBaseURI() string {
 		fmt.Printf("Recognize environment variable %s,use base uri :%s", ETCD_UI_BASEURI, base)
 		env.BaseUri = base
 	} else {
-		env.BaseUri = "/"
+		env.BaseUri = "/api/"
 	}
 	return env.BaseUri
 }

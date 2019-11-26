@@ -15,10 +15,10 @@ func routerHandler() http.Handler {
 	e.Use(gin.Recovery())
 	admin := e.Group(Env.GetBaseURI()+"admin", authMiddleware.Verify())
 
-	e.Static("/assets", "./assets")
+	e.Static(Env.GetBaseURI()+"/assets", "./assets")
 
 	// login
-	e.POST("/login", handler.login)
+	e.POST(Env.GetBaseURI()+"login", handler.login)
 
 	// route for role
 	admin.POST("/role", handler.AddRole)
@@ -42,6 +42,7 @@ func routerHandler() http.Handler {
 
 	admin.GET("/kvs", handler.GetConfigList)
 	admin.PUT("/kv", handler.PutConfig)
-	admin.DELETE("/kv/*", handler.RemoveConfig)
+	admin.DELETE("/kv/*key", handler.RemoveConfig)
+
 	return e
 }

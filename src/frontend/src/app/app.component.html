@@ -2,12 +2,16 @@
     <nz-header>
         <div class="logo"></div>
         <ul nz-menu nzTheme="dark" nzMode="horizontal">
-            <li nz-menu-item><i nz-icon nzType="cluster" nzTheme="outline"></i>Status</li>
-            <li nz-menu-item><i nz-icon nzType="file-protect" nzTheme="outline"></i>KVs</li>
-            <li nz-submenu nzTitle="Settings" nzIcon="setting">
+            <li nz-menu-item nzMatchRouter [routerLink]="['/status']"><i nz-icon nzType="cluster" nzTheme="outline"></i>
+                Status
+            </li>
+            <li nz-menu-item nzMatchRouter [routerLink]="['/KVs']"><i nz-icon nzType="file-protect" nzTheme="outline"></i>
+                KVs
+            </li>
+            <li nz-submenu nzTitle="Settings" nzIcon="setting" >
                 <ul>
-                    <li nz-menu-item><i nz-icon nzType="user" nzTheme="outline"></i>User Setting</li>
-                    <li nz-menu-item><i nz-icon nzType="team" nzTheme="outline"></i>Role Setting</li>
+                    <li nz-menu-item nzMatchRouter [routerLink]="['/settings','user']"><i nz-icon nzType="user" nzTheme="outline"></i>User Setting</li>
+                    <li nz-menu-item nzMatchRouter [routerLink]="['/settings','role']"><i nz-icon nzType="team" nzTheme="outline"></i>Role Setting</li>
                 </ul>
             </li>
         </ul>

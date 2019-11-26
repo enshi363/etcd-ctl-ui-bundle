@@ -17,13 +17,14 @@ export class HttpInterCeptor implements HttpInterceptor {
 
     this._credential = sessionStorage.getItem('_credential')||'';
     let params = req.params;
-    let url = req.params.keys().reduce((carry,k)=> {
-      carry = carry.replace(k, req.params.get(k));
-      if ((/^@.+/g).test(k) == true) {
-        params = params.delete(k);
-      }
-      return carry;
-    }, req.url).replace(/\/@.+/, '');
+    // let url = req.params.keys().reduce((carry,k)=> {
+    //   carry = carry.replace(k, req.params.get(k));
+    //   if ((/^@.+/g).test(k) == true) {
+    //     params = params.delete(k);
+    //   }
+    //   return carry;
+    // }, req.url).replace(/\/@.+/, '');
+    let url = req.url
     const authReq = req.clone({url, headers: req.headers.set('Authorization', this._credential), params, withCredentials: true});
     return next.handle(authReq).pipe(catchError((error: HttpErrorResponse) => {
       if ((error.status === 401 || error.status === 403) && this.redirected === false) {

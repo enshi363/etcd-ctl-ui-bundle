@@ -1,20 +1,65 @@
-<nz-table #basicTable [nzData]="dataSet">
-  <thead>
-    <tr>
-      <th>Key</th>
-      <th>Key Range End</th>
-      <th>PermissionType</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let data of basicTable.data">
-      <td>{{data.key}}</td>
-      <td>{{data.range_end}}</td>
-      <td>{{data.permType}}</td>
-      <td>
-        <a>Delete</a>
-      </td>
-    </tr>
-  </tbody>
-</nz-table>
+<nz-tabset nzLinkRouter>
+  <nz-tab>
+    <a nz-tab-link [routerLink]="['/settings/role']" [queryParams]="{ tab: '1' }" queryParamsHandling="merge">Permission List</a>
+    <nz-table #basicTable [nzData]="dataSet" [nzShowPagination]="false" [nzFrontPagination]="true" [nzLoading]="loading"
+      [nzTotal]="total" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Key Range End</th>
+          <th>PermissionType</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{data.key}}</td>
+          <td>{{data.endKey}}</td>
+          <td>
+            <span *ngIf="!data.t">r</span>
+            <span *ngIf="data.t==1">w</span>
+            <span *ngIf="data.t==2">w/r</span>
+          </td>
+          <td>
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure revoke this permission?"  (nzOnConfirm)="RevokePermission(data)">Delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-tab>
+  <nz-tab >
+      <a nz-tab-link [routerLink]="['/settings/role']" [queryParams]="{ tab: '2' }" queryParamsHandling="merge">Grant Permission</a>
+      <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="GrantPermission()" >
+          <nz-form-item>
+              <span class="error">{{errors}}</span>
+            </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="key">Key</nz-form-label>
+            <nz-form-control nzErrorTip="key required" [nzSm]="14" [nzXs]="24">
+                <input type="text" nz-input formControlName="key" placeholder="Key" id="key">
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="rangeend">Range End</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input type="text" nz-input formControlName="rangeEnd" id="rangeend" placeholder="RangeEndKey">
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="permissionType">Permisstion Type</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="permission type required">
+                <nz-radio-group formControlName="permType" id="permissionType">
+                    <label nz-radio nzValue="0">readOnly</label>
+                    <label nz-radio nzValue="1">write</label>
+                    <label nz-radio nzValue="2">read and write</label>
+                </nz-radio-group>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item nz-row class="register-area">
+            <nz-form-control [nzSpan]="14" [nzOffset]="6">
+              <button nz-button nzType="primary" [nzLoading]="isOkLoading">Save</button>
+            </nz-form-control>
+          </nz-form-item>
+      </form>
+  </nz-tab>
+</nz-tabset>

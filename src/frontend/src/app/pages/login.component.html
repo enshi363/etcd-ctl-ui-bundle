@@ -4,7 +4,7 @@
   </div>
   <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
     <nz-form-item>
-      <span class="login-error">{{errors}}</span>
+      <span class="error">{{errors}}</span>
     </nz-form-item>
     <nz-form-item>
       <nz-form-control nzErrorTip="username required">

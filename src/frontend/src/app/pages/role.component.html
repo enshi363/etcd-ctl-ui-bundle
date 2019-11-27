@@ -1,20 +1,38 @@
 <nz-page-header (nzBack)="onBack()" nzBackIcon nzTitle="Roles" nzSubtitle="You can manage roles"> </nz-page-header>
-
+<button nz-button nzType="primary" (click)="CreateRole()" class="head-action">
+    <i nz-icon nzType="usergroup-add" nzTheme="outline"></i>Create Role
+</button>
 <nz-skeleton [nzActive]="true" [nzLoading]="loading">
   <div nz-row [nzGutter]="20">
-    <div nz-col [nzSpan]="4" *ngFor="let role of roles">
-      <nz-card [nzActions]="[actionEdit, actionTrash]">
-        <nz-card-meta [nzAvatar]="avatarTemplate" nzTitle="{{role}}" nzDescription=""></nz-card-meta>
-      </nz-card>
-      <ng-template #avatarTemplate>
-        <i nz-icon nzType="team" nzTheme="outline"></i>
-      </ng-template>
-      <ng-template #actionEdit>
-        <i nz-icon nzType="edit" (click)="editRole(role)"></i>
-      </ng-template>
-      <ng-template #actionTrash>
-        <i nz-icon nzType="delete"></i>
-      </ng-template>
-    </div>
+    <ng-container *ngFor="let role of roles">
+      <div nz-col [nzSpan]="4" *ngIf="role!='root'" >
+        <nz-card [nzActions]="[actionEdit, actionTrash]">
+          <nz-card-meta [nzAvatar]="avatarTemplate" nzTitle="{{role}}" nzDescription=""></nz-card-meta>
+        </nz-card>
+        <ng-template #avatarTemplate>
+          <i nz-icon nzType="team" nzTheme="outline"></i>
+        </ng-template>
+        <ng-template #actionEdit>
+          <i nz-icon nzType="edit" (click)="editRole(role)"></i>
+        </ng-template>
+        <ng-template #actionTrash>
+          <i nz-popconfirm nzPopconfirmTitle="Are you sure remove this Role?" nz-icon nzType="delete" (nzOnConfirm)="RemoveRole(role)"></i>
+        </ng-template>
+      </div>
+    </ng-container>
   </div>
 </nz-skeleton>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Create a role" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+  [nzOkLoading]="isOkLoading">
+  <form nz-form [formGroup]="validateForm" class="login-form" >
+      <nz-form-item>
+          <span class="error">{{errors}}</span>
+        </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="role name required">
+            <input type="text" nz-input formControlName="roleName" placeholder="RoleName">
+        </nz-form-control>
+      </nz-form-item>
+  </form>
+</nz-modal>

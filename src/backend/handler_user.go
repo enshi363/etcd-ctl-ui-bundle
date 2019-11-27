@@ -27,11 +27,6 @@ func (handler *httpHanlder) AddUser(c *gin.Context) {
 }
 
 func (handler *httpHanlder) GrantUserRole(c *gin.Context) {
-	var json User
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
 	if err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
@@ -40,8 +35,8 @@ func (handler *httpHanlder) GrantUserRole(c *gin.Context) {
 	defer cli.Close()
 	if _, err = cli.UserGrantRole(
 		context.TODO(),
-		json.User,
-		json.Role,
+		c.Param("username"),
+		c.Param("role"),
 	); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -99,7 +94,7 @@ func (handler *httpHanlder) GetUserList(c *gin.Context) {
 		return
 	}
 	//userJson, _ := json.Marshal(resp.Users)
-	c.JSON(http.StatusOK, gin.H{"roles": (resp.Users)})
+	c.JSON(http.StatusOK, gin.H{"users": (resp.Users)})
 }
 
 func (handler *httpHanlder) GetUser(c *gin.Context) {
@@ -118,7 +113,7 @@ func (handler *httpHanlder) GetUser(c *gin.Context) {
 		return
 	}
 	//roleJson, _ := json.Marshal(resp.Roles)
-	c.JSON(http.StatusOK, gin.H{"permissions": resp.Roles})
+	c.JSON(http.StatusOK, gin.H{"roles": resp.Roles})
 }
 
 func (handler *httpHanlder) ChangePassword(c *gin.Context) {

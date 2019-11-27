@@ -4,11 +4,11 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
-interface Role {
+export interface Role {
     name:string
     key:string
     endKey :string
-    Type:number
+    t:number
 }
 @Injectable()
 export class RoleService {
@@ -25,11 +25,17 @@ export class RoleService {
             .get(environment.baseURI+"/admin/role/"+role, { observe: 'response' })
             .pipe(map(response => {
                 let data = response.body as any;
+                data = data.permissions
                 data.perm = data.perm.map((p)=>{
-                    p.key = atob(p.key||"")
-                    p.range_end= atob(p.range_end||"")
-                    return p
+                    let r :Role = {
+                        name:role,
+                        key:atob(p.key||""),
+                        endKey:atob(p.range_end||""),
+                        t:p.permType
+                    }
+                    return r 
                 })
+                return data
             }));
     }
     AddRole(role:Role): Observable<any> {
@@ -48,7 +54,7 @@ export class RoleService {
     }
     RevokeRolePermission(role:Role): Observable<any> {
         return this.http
-            .delete(environment.baseURI+"/admin/permission/"+role.name, { observe: 'response' })
+            .post(environment.baseURI+"/admin/permission/"+role.name, role, { observe: 'response' ,headers:{"X-HTTP-Method-Override":"DELETE"}})
             .pipe(map(response => {
                 return response.body as any;
             }));

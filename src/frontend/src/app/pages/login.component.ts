@@ -15,9 +15,6 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './login.component.html',
   styles: [
     `
-      .login-error{
-        color:red;
-      }
       .login-form {
         float: left;
         display: block;

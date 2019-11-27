@@ -16,7 +16,7 @@ export class AuthService {
 
   login(username :string ,password:string): Observable<any> {
     return this.http
-      .post(environment.baseURI +"login", {
+      .post(environment.baseURI +"/login", {
         user:username,
         password :password
       }, { observe: 'response' })

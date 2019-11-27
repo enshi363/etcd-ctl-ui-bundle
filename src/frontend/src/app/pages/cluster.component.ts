@@ -7,7 +7,7 @@ import { NzNotificationService } from 'ng-zorro-antd';
 import { ClusterService } from '../services';
 
 @Component({
-  // selector: 'login-root',
+  providers: [ClusterService],
   templateUrl: './cluster.component.html',
   styles: [
   ]

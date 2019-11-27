@@ -23,6 +23,8 @@ registerLocaleData(zh);
     pages.ClusterComponent,
     pages.RoleComponent,
     pages.RoleEditComponent,
+    pages.UserComponent,
+    pages.UserDetailComponent,
     pages.LoginComponent
   ],
   imports: [
@@ -42,9 +44,7 @@ registerLocaleData(zh);
       useClass: HttpInterCeptor,
       multi: true,
     },
-    services.AuthService,
-    services.RoleService,
-    services.ClusterService
+    services.AuthService
   ],
   entryComponents:[
     pages.RoleEditComponent

@@ -31,7 +31,7 @@ func routerHandler() http.Handler {
 	// router for user
 	admin.POST("/user", handler.AddUser)
 	admin.DELETE("/user/:username", handler.RemoveUser)
-	admin.PUT("/user-role/:username", handler.GrantUserRole)
+	admin.PUT("/user-role/:username/:role", handler.GrantUserRole)
 	admin.DELETE("/user-role/:username/:role", handler.RevokeUserRole)
 	admin.GET("/users", handler.GetUserList)
 	admin.GET("/user/:username", handler.GetUser)
@@ -44,5 +44,5 @@ func routerHandler() http.Handler {
 	admin.PUT("/kv", handler.PutConfig)
 	admin.DELETE("/kv/*key", handler.RemoveConfig)
 
-	return e
+	return MethodOverride(e)
 }

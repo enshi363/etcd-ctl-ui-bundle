@@ -6,6 +6,7 @@ const routes: Routes = [
   { path: 'login', component: pages.LoginComponent },
   { path: 'status', component: pages.ClusterComponent },
   { path: 'settings/role', component: pages.RoleComponent },
+  { path: 'settings/user', component: pages.UserComponent},
   { path:  '', redirectTo : 'login', pathMatch: 'full'},
 ];
 

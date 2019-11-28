@@ -2,7 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"path"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -57,20 +60,34 @@ func (handler *httpHanlder) RemoveConfig(c *gin.Context) {
 }
 
 func (handler *httpHanlder) GetConfigList(c *gin.Context) {
-	startKey := c.DefaultQuery("startKey", "")
+	prefix := c.DefaultQuery("prefix", "")
+	limit := Env.GetMaxLimit()
+
 	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
 	if err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
 		return
 	}
 	defer cli.Close()
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	resp, err := cli.Get(ctx, startKey, clientv3.WithFromKey(), clientv3.WithLimit(25), clientv3.WithSort(clientv3.SortByKey, clientv3.SortDescend))
+	resp, err := cli.Get(ctx, prefix, clientv3.WithKeysOnly(), clientv3.WithPrefix(), clientv3.WithLimit(int64(limit)), clientv3.WithSort(clientv3.SortByKey, clientv3.SortDescend))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	result := []string{}
+	for _, k := range resp.Kvs {
+		dir, file := path.Split(string(k.Key))
+		fmt.Println(dir, file)
+		if file != "" && strings.HasPrefix(dir, prefix) {
+			result = append(result, file)
+		}
+		p := strings.TrimPrefix(dir, prefix)
+		if strings.HasSuffix(dir, "/") && strings.Count(p, "/") == 1 {
+			result = append(result, p)
+		}
+	}
 	//data, _ := json.Marshal(resp)
-	c.JSON(http.StatusOK, gin.H{"data": (resp)})
+	c.JSON(http.StatusOK, gin.H{"data": (result)})
 }

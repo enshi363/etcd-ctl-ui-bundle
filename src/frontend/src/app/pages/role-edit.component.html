@@ -1,6 +1,6 @@
 <nz-tabset nzLinkRouter>
   <nz-tab>
-    <a nz-tab-link [routerLink]="['/settings/role']" [queryParams]="{ tab: '1' }" queryParamsHandling="merge">Permission List</a>
+    <a nz-tab-link [routerLink]="['/settings/role']" [queryParams]="{ }" queryParamsHandling="merge">Permission List</a>
     <nz-table #basicTable [nzData]="dataSet" [nzShowPagination]="false" [nzFrontPagination]="true" [nzLoading]="loading"
       [nzTotal]="total" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize">
       <thead>

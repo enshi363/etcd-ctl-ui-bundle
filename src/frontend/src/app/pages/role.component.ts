@@ -166,7 +166,7 @@ export class RoleEditComponent implements OnInit, OnDestroy {
     }
     this.roleService.GrantRolePermission(role).subscribe(res=>{
       this.isOkLoading = false;
-      this.router.navigateByUrl("/settings/role?tab=1");
+      this.router.navigateByUrl("/settings/role");
       this.loadPermission();
     },err=>{
       this.errors = err.error.error;

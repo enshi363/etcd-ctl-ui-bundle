@@ -25,6 +25,7 @@ registerLocaleData(zh);
     pages.RoleEditComponent,
     pages.UserComponent,
     pages.UserDetailComponent,
+    pages.KvComponent,
     pages.LoginComponent
   ],
   imports: [

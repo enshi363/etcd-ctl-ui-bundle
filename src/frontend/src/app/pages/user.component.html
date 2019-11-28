@@ -1,46 +1,47 @@
 <nz-page-header (nzBack)="onBack()" nzBackIcon nzTitle="Users" nzSubtitle="You can manage Users"> </nz-page-header>
 <button nz-button nzType="primary" (click)="CreateUser()" class="head-action">
-    <i nz-icon nzType="user-add" nzTheme="outline"></i>Create User 
+  <i nz-icon nzType="user-add" nzTheme="outline"></i>Create User
 </button>
-<nz-skeleton [nzActive]="true" [nzLoading]="loading">
-  <div nz-row [nzGutter]="20">
-    <ng-container *ngFor="let user of users">
-      <div nz-col [nzSpan]="4" *ngIf="user!='root'" >
-        <nz-card [nzActions]="[actionEdit, actionTrash]">
-          <nz-card-meta [nzAvatar]="avatarTemplate" nzTitle="{{user}}" [nzDescription]="detailTemplate">
-          </nz-card-meta>
-        </nz-card>
+
+<nz-list class="demo-loadmore-list" [nzDataSource]="users" [nzItemLayout]="'horizontal'" [nzLoading]="loading"
+  [nzRenderItem]="item" [nzLoadMore]="loadMore">
+  <ng-template #item let-item >
+    <nz-list-item [nzActions]="[editAction, moreAction]" *ngIf="item!='root'">
+      <nz-skeleton [nzAvatar]="true" [nzActive]="true" [nzTitle]="false" [nzLoading]="loading">
+        <ng-template #editAction><a (click)="modify(item)">modify</a></ng-template>
+        <ng-template #titleTemplate><h3>{{item}}</h3></ng-template>
+        <ng-template #moreAction><a nz-popconfirm nzPopconfirmTitle="Are you sure remove this user?"
+            (onConfirm)="RemoveUser(item)">delete</a></ng-template>
         <ng-template #avatarTemplate>
-          <i nz-icon nzType="user" nzTheme="outline"></i>
-        </ng-template>
-        <ng-template #actionEdit>
-          <i nz-icon nzType="edit" (click)="editUser(user)"></i>
-        </ng-template>
-        <ng-template #actionTrash>
-          <i nz-popconfirm nzPopconfirmTitle="Are you sure remove this user?" nz-icon nzType="delete" (nzOnConfirm)="RemoveUser(user)"></i>
+          <nz-avatar nzIcon="user"></nz-avatar>
         </ng-template>
         <ng-template #detailTemplate>
-            <user-detail username="{{user}}"></user-detail>
+          <user-detail username="{{item}}"></user-detail>
         </ng-template>
-      </div>
-    </ng-container>
-  </div>
-</nz-skeleton>
+        <nz-list-item-meta [nzTitle]="titleTemplate" [nzAvatar]="avatarTemplate" [nzDescription]="detailTemplate">
+        </nz-list-item-meta>
+      </nz-skeleton>
+    </nz-list-item>
+  </ng-template>
+</nz-list>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Create a user" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
   [nzOkLoading]="isOkLoading">
-  <form nz-form [formGroup]="validateForm" class="login-form" >
-      <nz-form-item>
-          <span class="error">{{errors}}</span>
-        </nz-form-item>
-      <nz-form-item>
-        <nz-form-control nzErrorTip="user name required">
-            <input type="text" nz-input formControlName="userName" placeholder="UserName">
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-control nzErrorTip="password required">
-            <input type="text" nz-input formControlName="password" placeholder="password">
-        </nz-form-control>
-      </nz-form-item>
+  <form nz-form [formGroup]="validateForm" class="login-form">
+    <nz-form-item>
+      <span class="error">{{errors}}</span>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="user name required">
+        <input type="text" nz-input formControlName="userName" placeholder="UserName">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="password required">
+        <input type="text" nz-input formControlName="password" placeholder="password">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="isEdit">
+      <user-detail username="{{editUserName}}" [showAllRoles]="true"></user-detail>
+    </nz-form-item>
   </form>
 </nz-modal>

@@ -1,0 +1,33 @@
+<nz-page-header (nzBack)="onBack()" nzBackIcon nzTitle="KVs" nzSubtitle="You can manage KVs"> </nz-page-header>
+<button nz-button nzType="primary" (click)="CreateUser()" class="head-action">
+  <i nz-icon nzType="user-add" nzTheme="outline"></i>Add Config
+</button>
+
+<nz-list class="demo-loadmore-list" [nzDataSource]="kvs" [nzItemLayout]="'horizontal'" [nzLoading]="loading"
+  [nzRenderItem]="item" >
+  <ng-template #item let-item >
+    <nz-list-item [nzActions]="[editAction, moreAction]" >
+      <nz-skeleton [nzAvatar]="true" [nzActive]="true" [nzTitle]="false" [nzLoading]="loading">
+        <ng-template #titleTemplate><h3>{{item.key}}</h3></ng-template>
+        <ng-template #moreAction><a nz-popconfirm nzPopconfirmTitle="Are you sure remove this key?"
+            (onConfirm)="RemoveKey(item)">delete</a></ng-template>
+        <ng-template #avatarTemplate>
+          <nz-avatar nzIcon="file-text"></nz-avatar>
+        </ng-template>
+        <ng-template #detailTemplate>
+            <p
+            nz-paragraph
+            nzEllipsis
+            nzEditable
+            [nzEllipsisRows]="2"
+            [nzContent]="item.value"
+            (nzContentChange)="onChange($event)"
+            class="kv-content"
+          ></p>
+        </ng-template>
+        <nz-list-item-meta [nzTitle]="titleTemplate" [nzAvatar]="avatarTemplate" [nzDescription]="detailTemplate">
+        </nz-list-item-meta>
+      </nz-skeleton>
+    </nz-list-item>
+  </ng-template>
+</nz-list>

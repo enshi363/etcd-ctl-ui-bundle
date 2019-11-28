@@ -57,7 +57,7 @@ export class UserService{
     }
     ChangePassword(user:User): Observable<any> {
         return this.http
-            .patch(environment.baseURI+"/admin/user",user, { observe: 'response' })
+            .patch(environment.baseURI+"/admin/user/"+user.user,user, { observe: 'response' })
             .pipe(map(response => {
                 return response.body as any;
             }));

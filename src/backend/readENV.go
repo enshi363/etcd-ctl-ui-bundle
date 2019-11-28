@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -18,6 +19,8 @@ const (
 	DEFAULT_PORT = ":8088"
 
 	ETCD_UI_BASEURI = "ETCD_UI_BASEURI"
+
+	ETCD_UI_MAX_LIMIT = "ETCD_UI_BASEURI"
 )
 
 type Environment struct {
@@ -25,6 +28,7 @@ type Environment struct {
 	ListenPort string
 	Secret     []byte
 	BaseUri    string
+	Limit      int64
 }
 
 var Env = &Environment{}
@@ -79,4 +83,23 @@ func (env *Environment) GetBaseURI() string {
 		env.BaseUri = "/api/"
 	}
 	return env.BaseUri
+}
+
+func (env *Environment) GetMaxLimit() int64 {
+	if env.Limit != 0 {
+		return env.Limit
+	}
+	if limit := os.Getenv(ETCD_UI_MAX_LIMIT); limit != "" {
+		fmt.Printf("Recognize environment variable %s,use max retrieve limit :%s", ETCD_UI_MAX_LIMIT, limit)
+		i, err := strconv.ParseInt(limit, 10, 64)
+		if err != nil {
+			env.Limit = 65535
+		} else {
+			env.Limit = i
+
+		}
+	} else {
+		env.Limit = 65535
+	}
+	return env.Limit
 }

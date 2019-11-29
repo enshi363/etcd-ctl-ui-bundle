@@ -10,12 +10,11 @@ import {
 } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import { UserService,User, RoleService} from '../services';
+import { UserService,User, RoleService,BreadCrumb,BreadCrumbService} from '../services';
 import { switchMap } from 'rxjs/operators';
-import { InputBoolean } from 'ng-zorro-antd';
 
 @Component({
-  providers: [UserService],
+  providers: [],
   templateUrl: './user.component.html',
   styles: [
     `
@@ -39,8 +38,14 @@ export class UserComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private fb: FormBuilder,
     private message: NzMessageService,
-    private modalService: NzModalService
+    private modalService: NzModalService,
+    private bService:BreadCrumbService
   ) {
+    const b :BreadCrumb[]=[
+      {name:"settings",icon:"control",url:"/settings/user",param:''},
+      {name:"user",icon:"user",url:"",param:''},
+    ]
+    this.bService.BroadCastData(b)
   }
 
   ngOnInit(): void {
@@ -138,7 +143,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
 @Component({
   selector: 'user-detail',
-  providers: [UserService,RoleService],
+  providers: [],
   template: `
     <nz-skeleton [nzActive]="true" [nzLoading]="loading" style="width:70%;">
       <div *ngIf="roles.length==0">no roles attached</div>

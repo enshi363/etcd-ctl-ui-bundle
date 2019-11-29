@@ -17,16 +17,33 @@ import * as services from './services'
 
 registerLocaleData(zh);
 
+const PageComponents = (()=>{
+  let p = []
+  for (let k in pages){
+    p.push(pages[k])
+  }
+  return p;
+})()
+
+const MyServices= (()=>{
+  let s = []
+  for (let k in services){
+    s.push(services[k])
+  }
+  return s;
+})()
+
 @NgModule({
   declarations: [
     AppComponent,
-    pages.ClusterComponent,
-    pages.RoleComponent,
-    pages.RoleEditComponent,
-    pages.UserComponent,
-    pages.UserDetailComponent,
-    pages.KvComponent,
-    pages.LoginComponent
+    // pages.ClusterComponent,
+    // pages.RoleComponent,
+    // pages.RoleEditComponent,
+    // pages.UserComponent,
+    // pages.UserDetailComponent,
+    // pages.KvComponent,
+    // pages.LoginComponent
+    ...PageComponents
   ],
   imports: [
     BrowserModule,
@@ -45,7 +62,7 @@ registerLocaleData(zh);
       useClass: HttpInterCeptor,
       multi: true,
     },
-    services.AuthService
+    ...MyServices 
   ],
   entryComponents:[
     pages.RoleEditComponent

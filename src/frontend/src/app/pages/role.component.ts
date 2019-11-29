@@ -10,10 +10,10 @@ import {
 } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import { RoleService,Role} from '../services';
+import { RoleService,Role,BreadCrumb,BreadCrumbService} from '../services';
 
 @Component({
-  providers: [RoleService],
+  providers: [],
   templateUrl: './role.component.html',
   styles: [
     `
@@ -35,8 +35,14 @@ export class RoleComponent implements OnInit, OnDestroy {
     private roleService: RoleService,
     private fb: FormBuilder,
     private message: NzMessageService,
+    private bService: BreadCrumbService,
     private modalService: NzModalService
   ) {
+    const b :BreadCrumb[]=[
+      {name:"settings",icon:"control",url:"/settings/role",param:""},
+      {name:"role",icon:"team",url:"",param:""},
+    ]
+    this.bService.BroadCastData(b)
   }
 
   ngOnInit(): void {
@@ -117,7 +123,7 @@ export class RoleComponent implements OnInit, OnDestroy {
 
 @Component({
   templateUrl: './role-edit.component.html',
-  providers: [RoleService],
+  providers: [],
   styles: [
   ]
 })

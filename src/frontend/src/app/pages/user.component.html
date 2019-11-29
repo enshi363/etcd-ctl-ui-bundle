@@ -1,4 +1,4 @@
-<nz-page-header (nzBack)="onBack()" nzBackIcon nzTitle="Users" nzSubtitle="You can manage Users"> </nz-page-header>
+<!-- <nz-page-header (nzBack)="onBack()" nzBackIcon nzTitle="Users" nzSubtitle="You can manage Users"> </nz-page-header> -->
 <button nz-button nzType="primary" (click)="CreateUser()" class="head-action">
   <i nz-icon nzType="user-add" nzTheme="outline"></i>Create User
 </button>
@@ -11,7 +11,7 @@
         <ng-template #editAction><a (click)="modify(item)">modify</a></ng-template>
         <ng-template #titleTemplate><h3>{{item}}</h3></ng-template>
         <ng-template #moreAction><a nz-popconfirm nzPopconfirmTitle="Are you sure remove this user?"
-            (onConfirm)="RemoveUser(item)">delete</a></ng-template>
+            (nzOnConfirm)="RemoveUser(item)">delete</a></ng-template>
         <ng-template #avatarTemplate>
           <nz-avatar nzIcon="user"></nz-avatar>
         </ng-template>
@@ -32,7 +32,7 @@
     </nz-form-item>
     <nz-form-item>
       <nz-form-control nzErrorTip="user name required">
-        <input type="text" nz-input formControlName="userName" placeholder="UserName">
+          <input type="text" nz-input formControlName="userName" placeholder="UserName">
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>

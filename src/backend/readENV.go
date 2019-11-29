@@ -93,13 +93,13 @@ func (env *Environment) GetMaxLimit() int64 {
 		fmt.Printf("Recognize environment variable %s,use max retrieve limit :%s", ETCD_UI_MAX_LIMIT, limit)
 		i, err := strconv.ParseInt(limit, 10, 64)
 		if err != nil {
-			env.Limit = 65535
+			env.Limit = 0
 		} else {
 			env.Limit = i
 
 		}
 	} else {
-		env.Limit = 65535
+		env.Limit = 0
 	}
 	return env.Limit
 }

@@ -43,6 +43,7 @@ func routerHandler() http.Handler {
 	admin.GET("/kvs", handler.GetConfigList)
 	admin.PUT("/kv", handler.PutConfig)
 	admin.DELETE("/kv/*key", handler.RemoveConfig)
+	admin.GET("/kv/*key", handler.GetConfig)
 
 	return MethodOverride(e)
 }

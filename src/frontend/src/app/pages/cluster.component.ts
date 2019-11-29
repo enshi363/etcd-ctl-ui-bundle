@@ -4,10 +4,10 @@ import {Location} from '@angular/common';
 
 import { NzNotificationService } from 'ng-zorro-antd';
 
-import { ClusterService } from '../services';
+import { ClusterService ,BreadCrumbService,BreadCrumb} from '../services';
 
 @Component({
-  providers: [ClusterService],
+  providers: [],
   templateUrl: './cluster.component.html',
   styles: [
   ]
@@ -19,7 +19,13 @@ export class ClusterComponent implements OnInit, OnDestroy {
     private location: Location,
     private notification: NzNotificationService,
     private clusterService: ClusterService,
+    private bService:BreadCrumbService
   ) {
+    const b :BreadCrumb[]=[
+      {name:"cluster",icon:"",url:"/status",param:''},
+      {name:"status",icon:"",url:"",param:''},
+    ]
+    this.bService.BroadCastData(b)
   }
 
   ngOnInit(): void {

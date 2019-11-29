@@ -1,26 +1,36 @@
 <nz-layout>
-    <nz-header>
-        <div class="logo"></div>
-        <ul nz-menu nzTheme="dark" nzMode="horizontal">
-            <li nz-menu-item nzMatchRouter [routerLink]="['/status']"><i nz-icon nzType="cluster" nzTheme="outline"></i>
-                Status
-            </li>
-            <li nz-menu-item nzMatchRouter [routerLink]="['/KVs']"><i nz-icon nzType="file-protect" nzTheme="outline"></i>
-                KVs
-            </li>
-            <li nz-submenu nzTitle="Settings" nzIcon="setting" >
-                <ul>
-                    <li nz-menu-item nzMatchRouter [routerLink]="['/settings','user']"><i nz-icon nzType="user" nzTheme="outline"></i>User Setting</li>
-                    <li nz-menu-item nzMatchRouter [routerLink]="['/settings','role']"><i nz-icon nzType="team" nzTheme="outline"></i>Role Setting</li>
-                </ul>
-            </li>
+  <nz-header>
+    <div class="logo"></div>
+    <ul nz-menu nzTheme="dark" nzMode="horizontal">
+      <li nz-menu-item nzMatchRouter [routerLink]="['/status']"><i nz-icon nzType="cluster" nzTheme="outline"></i>
+        Status
+      </li>
+      <li nz-menu-item nzMatchRouter [routerLink]="['/KVs']"><i nz-icon nzType="file-protect" nzTheme="outline"></i>
+        KVs
+      </li>
+      <li nz-submenu nzTitle="Settings" nzIcon="setting">
+        <ul>
+          <li nz-menu-item nzMatchRouter [routerLink]="['/settings','user']"><i nz-icon nzType="user"
+              nzTheme="outline"></i>User Setting</li>
+          <li nz-menu-item nzMatchRouter [routerLink]="['/settings','role']"><i nz-icon nzType="team"
+              nzTheme="outline"></i>Role Setting</li>
         </ul>
-    </nz-header>
-    <nz-content>
-        <div class="inner-content">
-            <router-outlet></router-outlet>
-        </div>
-
-    </nz-content>
-    <nz-footer>Ant Design ©2019 Implement By Angular</nz-footer>
+      </li>
+    </ul>
+  </nz-header>
+  <nz-content>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <i nz-icon nzType="home"></i>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item *ngFor="let b of breads">
+        <a [routerLink]="[b.url,b.param]" *ngIf="b.url!=''"><i nz-icon [nzType]="b.icon"></i><span>{{b.name}}</span></a>
+        <ng-container *ngIf="b.url==''"><i nz-icon [nzType]="b.icon" ></i><span>{{b.name}}</span></ng-container>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <div class="inner-content">
+      <router-outlet></router-outlet>
+    </div>
+  </nz-content>
+  <nz-footer>Ant Design ©2019 Implement By Angular</nz-footer>
 </nz-layout>

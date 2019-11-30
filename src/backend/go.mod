@@ -11,6 +11,7 @@ require (
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.4.0
+	github.com/gobuffalo/packr/v2 v2.7.1
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/google/btree v1.0.0 // indirect
@@ -40,4 +41,6 @@ require (
 	sigs.k8s.io/yaml v1.1.0 // indirect
 )
 
-replace github.com/coreos/go-systemd => /Users/shien/Workspace/go-projects/pkg/mod/github.com/coreos/go-systemd/v22@v22.0.0
+replace github.com/coreos/go-systemd => /opt/go/pkg/mod/github.com/coreos/go-systemd/v22@v22.0.0
+
+replace github.com/ugorji/go v1.1.4 => github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43

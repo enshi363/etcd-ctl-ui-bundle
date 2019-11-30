@@ -7,43 +7,27 @@ import { AppComponent } from './app.component';
 import { NgZorroAntdModule, NZ_I18N, zh_CN } from 'ng-zorro-antd';
 import { FormsModule , ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule,HTTP_INTERCEPTORS,HttpClientJsonpModule } from '@angular/common/http';
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData,APP_BASE_HREF } from '@angular/common';
 import zh from '@angular/common/locales/zh';
 import { HttpInterCeptor } from './HttpInterceptor';
 import * as pages from './pages';
 
 import * as services from './services'
+import { environment } from 'src/environments/environment';
 // import { ClusterService } from './services/cluster.service'
 
 registerLocaleData(zh);
 
-const PageComponents = (()=>{
-  let p = []
-  for (let k in pages){
-    p.push(pages[k])
-  }
-  return p;
-})()
-
-const MyServices= (()=>{
-  let s = []
-  for (let k in services){
-    s.push(services[k])
-  }
-  return s;
-})()
-
 @NgModule({
   declarations: [
     AppComponent,
-    // pages.ClusterComponent,
-    // pages.RoleComponent,
-    // pages.RoleEditComponent,
-    // pages.UserComponent,
-    // pages.UserDetailComponent,
-    // pages.KvComponent,
-    // pages.LoginComponent
-    ...PageComponents
+    pages.ClusterComponent,
+    pages.RoleComponent,
+    pages.RoleEditComponent,
+    pages.UserComponent,
+    pages.UserDetailComponent,
+    pages.KvComponent,
+    pages.LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,12 +41,18 @@ const MyServices= (()=>{
   ],
   providers: [
     { provide: NZ_I18N, useValue: zh_CN },
+    {provide: APP_BASE_HREF, useValue: environment.appBaseURI},
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpInterCeptor,
       multi: true,
     },
-    ...MyServices 
+    services.AuthService,
+    services.BreadCrumbService,
+    services.ClusterService,
+    services.KvService,
+    services.RoleService,
+    services.UserService
   ],
   entryComponents:[
     pages.RoleEditComponent

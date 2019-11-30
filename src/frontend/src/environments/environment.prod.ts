@@ -1,3 +1,6 @@
+declare const BASEURI :string
 export const environment = {
-  production: true
+  production: true,
+  baseURI:BASEURI,
+  appBaseURI:"/webui"
 };

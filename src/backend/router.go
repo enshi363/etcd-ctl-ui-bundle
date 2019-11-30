@@ -1,9 +1,12 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gobuffalo/packr/v2"
 )
 
 type httpHanlder struct{}
@@ -15,7 +18,15 @@ func routerHandler() http.Handler {
 	e.Use(gin.Recovery())
 	admin := e.Group(Env.GetBaseURI()+"admin", authMiddleware.Verify())
 
-	e.Static(Env.GetBaseURI()+"/assets", "./assets")
+	box := packr.New("myBox", "./static")
+	s, err := box.FindString("index.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+	box.AddString("index.html", strings.Replace(s, "BASEURI=\"/api\"", "BASEURI=\""+Env.GetBaseURI()+"\"", -1))
+	e.StaticFS("/webui", box)
+
+	//e.Static(Env.GetBaseURI()+"/assets", "./assets")
 
 	// login
 	e.POST(Env.GetBaseURI()+"login", handler.login)

@@ -8,6 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type MyClaims struct {
+	Endpoints []string `json:"endpoints"`
+	jwt.StandardClaims
+}
+
 type AuthMiddleWare struct {
 	Secret []byte
 }
@@ -23,12 +28,19 @@ func (auth *AuthMiddleWare) Verify() gin.HandlerFunc {
 			c.AbortWithError(401, ERROR_TOKEN_INVALID)
 			return
 		}
-		token, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 			return auth.Secret, nil
 		})
-		if claims, ok := token.Claims.(*jwt.StandardClaims); ok && token.Valid {
-			c.Set("user.name", claims.Issuer)
-			c.Set("user.password", claims.Subject)
+		if claims, ok := token.Claims.(*MyClaims); ok && token.Valid {
+			//c.Set("user.name", claims.StandardClaims.Issuer)
+			//c.Set("user.password", claims.StandardClaims.Subject)
+			//c.Set("user.endpoints", claims.Endpoints)
+			client, err := NewEtcdClient(claims.StandardClaims.Issuer, claims.StandardClaims.Subject, claims.Endpoints)
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+				return
+			}
+			c.Set("etcdClient", client)
 
 		} else if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
@@ -50,14 +62,17 @@ func (auth *AuthMiddleWare) Verify() gin.HandlerFunc {
 	}
 }
 
-func (auth *AuthMiddleWare) MakeCredential(username, subject string) (tokenString string, err error) {
+func (auth *AuthMiddleWare) MakeCredential(username, subject string, endpoints []string) (tokenString string, err error) {
 
-	claims := &jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(86400 * time.Second).Unix(),
-		NotBefore: time.Now().Add(-5 * time.Minute).Unix(),
-		IssuedAt:  time.Now().Unix(),
-		Issuer:    username,
-		Subject:   subject,
+	claims := MyClaims{
+		endpoints,
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(86400 * time.Second).Unix(),
+			NotBefore: time.Now().Add(-5 * time.Minute).Unix(),
+			IssuedAt:  time.Now().Unix(),
+			Issuer:    username,
+			Subject:   subject,
+		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err = token.SignedString(auth.Secret)

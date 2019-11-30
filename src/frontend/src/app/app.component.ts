@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { BreadCrumbService,BreadCrumb} from './services/breadcrumb.service';
+import { BreadCrumbService,BreadCrumb,AuthService} from './services';
 
 
 @Component({
@@ -13,8 +13,10 @@ import { BreadCrumbService,BreadCrumb} from './services/breadcrumb.service';
 export class AppComponent {
     title = 'etcd web ui';
     breads :BreadCrumb[];
+    profile="";
     constructor(
         private router: Router,
+        private authService:AuthService,
         private bService:BreadCrumbService
     ) {
         this.bService.GetCrumbData().subscribe(res=>{
@@ -22,6 +24,13 @@ export class AppComponent {
         })
     }
     ngOnInit():void{
+        let p = this.authService.parseProfileString(this.authService.GetCurrentProfile())
+        this.profile = p.username+"@"+p.endpoints
         // console.log(this.activateRoute.component)
+    }
+    switchProfile():void{
+        this.authService.ClearAuth();
+        this.profile = "";
+        this.router.navigateByUrl("/login");
     }
 }

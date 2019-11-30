@@ -18,6 +18,14 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
+	//box := packr.New("myBox", "./static")
+	//s, err := box.FindString("index.html")
+	//if err != nil {
+	//log.Fatal(err)
+	//}
+	//box.AddString("index.html", strings.Replace(s, "BASEURI=\"/api\"", "BASEURI=\""+Env.GetBaseURI()+"\"", -1))
+	//srv.Handle("/webui", http.FileServer(box))
+
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)

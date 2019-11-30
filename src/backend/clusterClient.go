@@ -8,9 +8,9 @@ import (
 	"time"
 )
 
-func NewEtcdClient(user, password string) (*clientv3.Client, error) {
+func NewEtcdClient(user, password string, endpoints []string) (*clientv3.Client, error) {
 	cli, err := clientv3.New(clientv3.Config{
-		Endpoints:   Env.GetEndPoints(),
+		Endpoints:   endpoints,
 		DialTimeout: 10 * time.Second,
 		Username:    user,
 		Password:    password,

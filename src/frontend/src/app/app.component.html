@@ -1,7 +1,7 @@
 <nz-layout>
   <nz-header>
     <div class="logo"></div>
-    <ul nz-menu nzTheme="dark" nzMode="horizontal">
+    <ul nz-menu  nzMode="horizontal">
       <li nz-menu-item nzMatchRouter [routerLink]="['/status']"><i nz-icon nzType="cluster" nzTheme="outline"></i>
         Status
       </li>
@@ -16,12 +16,17 @@
               nzTheme="outline"></i>Role Setting</li>
         </ul>
       </li>
+      <li nz-menu-item style="float:right;" (click)="switchProfile()">
+        Switch Profile 
+        <i nz-icon nzType="logout" nzTheme="outline" ></i>
+      </li>
     </ul>
   </nz-header>
   <nz-content>
     <nz-breadcrumb>
       <nz-breadcrumb-item>
-        <i nz-icon nzType="home"></i>
+        <i nz-icon nzType="database"></i>
+        {{profile}}
       </nz-breadcrumb-item>
       <nz-breadcrumb-item *ngFor="let b of breads">
         <a [routerLink]="[b.url,b.param]" *ngIf="b.url!=''"><i nz-icon [nzType]="b.icon"></i><span>{{b.name}}</span></a>

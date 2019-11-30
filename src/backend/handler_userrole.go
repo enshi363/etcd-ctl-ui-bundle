@@ -22,13 +22,14 @@ func (handler *httpHanlder) AddRole(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-		return
-	}
+	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
+	//if err != nil {
+	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	//return
+	//}
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
-	if _, err = cli.RoleAdd(context.TODO(), json.Name); err != nil {
+	if _, err := cli.RoleAdd(context.TODO(), json.Name); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -41,13 +42,14 @@ func (handler *httpHanlder) GrantRolePermission(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-		return
-	}
+	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
+	//if err != nil {
+	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	//return
+	//}
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
-	if _, err = cli.RoleGrantPermission(
+	if _, err := cli.RoleGrantPermission(
 		context.TODO(),
 		json.Name, // role name
 		json.Key,  // key
@@ -66,13 +68,14 @@ func (handler *httpHanlder) RevokeRolePermission(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-		return
-	}
+	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
+	//if err != nil {
+	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	//return
+	//}
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
-	if _, err = cli.RoleRevokePermission(
+	if _, err := cli.RoleRevokePermission(
 		context.TODO(),
 		json.Name, // role name
 		json.Key,  // key
@@ -85,13 +88,14 @@ func (handler *httpHanlder) RevokeRolePermission(c *gin.Context) {
 }
 
 func (handler *httpHanlder) RemoveRole(c *gin.Context) {
-	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-		return
-	}
+	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
+	//if err != nil {
+	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	//return
+	//}
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
-	if _, err = cli.RoleDelete(
+	if _, err := cli.RoleDelete(
 		context.TODO(),
 		c.Param("role"), // role name
 	); err != nil {
@@ -102,11 +106,12 @@ func (handler *httpHanlder) RemoveRole(c *gin.Context) {
 }
 
 func (handler *httpHanlder) GetRoleList(c *gin.Context) {
-	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-		return
-	}
+	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
+	//if err != nil {
+	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	//return
+	//}
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	resp, err := cli.RoleList(
 		context.TODO(),
@@ -120,11 +125,12 @@ func (handler *httpHanlder) GetRoleList(c *gin.Context) {
 }
 
 func (handler *httpHanlder) GetRole(c *gin.Context) {
-	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-		return
-	}
+	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
+	//if err != nil {
+	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	//return
+	//}
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	resp, err := cli.RoleGet(
 		context.TODO(),

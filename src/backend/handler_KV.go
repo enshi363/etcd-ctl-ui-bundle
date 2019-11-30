@@ -25,14 +25,15 @@ func (handler *httpHanlder) PutConfig(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-		return
-	}
+	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
+	//if err != nil {
+	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	//return
+	//}
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	_, err = cli.Put(ctx, data.Key, data.Content)
+	_, err := cli.Put(ctx, data.Key, data.Content)
 	cancel()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -42,16 +43,17 @@ func (handler *httpHanlder) PutConfig(c *gin.Context) {
 }
 
 func (handler *httpHanlder) RemoveConfig(c *gin.Context) {
-	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-		return
-	}
+	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
+	//if err != nil {
+	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	//return
+	//}
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 	fmt.Sprintln(c.Param("key"))
-	_, err = cli.Delete(ctx, c.Param("key"), clientv3.WithPrefix())
+	_, err := cli.Delete(ctx, c.Param("key"), clientv3.WithPrefix())
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -69,11 +71,12 @@ func (handler *httpHanlder) GetConfigList(c *gin.Context) {
 		opts = append(opts, clientv3.WithLimit(limit))
 	}
 
-	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-		return
-	}
+	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
+	//if err != nil {
+	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	//return
+	//}
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -83,17 +86,27 @@ func (handler *httpHanlder) GetConfigList(c *gin.Context) {
 		return
 	}
 	result := []string{}
+	dirMap := map[string]bool{}
 	for _, k := range resp.Kvs {
 		dir, file := path.Split(string(k.Key))
 		fmt.Println(dir, file)
-		if file != "" && strings.HasPrefix(dir, prefix) {
+		if file != "" && dir == prefix {
 			result = append(result, file)
 		}
 		p := strings.TrimPrefix(dir, prefix)
-		if strings.HasSuffix(dir, "/") && strings.Count(p, "/") == 1 {
-			result = append(result, p)
+		_dir := strings.Split(p, "/")
+		if _dir[0] != "" {
+			dirMap[_dir[0]+"/"] = true
 		}
+
+		//if strings.HasSuffix(dir, "/") && strings.Count(p, "/") == 1 {
+		//result = append(result, p)
+		//}
 	}
+	for key, _ := range dirMap {
+		result = append(result, key)
+	}
+
 	//data, _ := json.Marshal(resp)
 	c.JSON(http.StatusOK, gin.H{"data": (result)})
 }
@@ -102,11 +115,12 @@ func (handler *httpHanlder) GetConfig(c *gin.Context) {
 	opts := []clientv3.OpOption{}
 	opts = append(opts, clientv3.WithSerializable())
 
-	cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-		return
-	}
+	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
+	//if err != nil {
+	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	//return
+	//}
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

@@ -8,36 +8,20 @@ import {
 } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 
-import { AuthService } from '../services/auth.service';
+import { AuthService, Profile } from '../services/auth.service';
 
 @Component({
   // selector: 'login-root',
   templateUrl: './login.component.html',
   styles: [
     `
-      .login-form {
-        float: left;
-        display: block;
-        margin-top: 200px;
-        margin-right: 50px;
-        margin-left: 20px;
-        width: 30%;
-      }
-      .logo {
-        float: left;
+      .login-form{
         width: 60%;
-        border-right: 2px solid #ccc;
-        height: 300px;
-        margin: 120px auto;
-        background: url(./assets/logo.png) no-repeat center;
+        margin: 20px auto;
+        padding:24px;
       }
-      .login-form-button {
-        width: 100%;
-      }
-      .login-container {
-        margin: 0;
-        background: url(./assets/login_bg.jpg) no-repeat;
-        height: 100%;
+      .remove-link {
+        float: right;
       }
     `
   ]
@@ -45,7 +29,9 @@ import { AuthService } from '../services/auth.service';
 export class LoginComponent implements OnInit, OnDestroy {
   isLogin = false;
   validateForm: FormGroup;
-  errors:string;
+  errors: string;
+  loading = false
+  profiles: string[] = [];
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -62,21 +48,40 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.validateForm.invalid) {
       return;
     }
-    this.authService.login(this.validateForm.get("username").value,this.validateForm.get("password").value).subscribe((res)=>{
+    this.loading = true;
+    this.authService.login(this.validateForm.get("endpoints").value).subscribe((res) => {
+      this.loading = false;
       this.router.navigate(['/status']);
-    },(err)=>{
+    }, (err) => {
+      this.loading = false;
       this.errors = err.error.error
     })
-  }
 
+    // this.authService.login(this.validateForm.get("username").value,this.validateForm.get("password").value).subscribe((res)=>{
+    //   this.router.navigate(['/status']);
+    // },(err)=>{
+    //   this.errors = err.error.error
+    // })
+  }
+  onInput(value: string): void {
+    this.profiles = this.authService.GetProfiles()
+    this.profiles = this.profiles.filter(p => {
+      return p.indexOf(value) != -1;
+    })
+    // this.options = value ? [value, value + value, value + value + value] : [];
+  }
+  remove(profile: string): void {
+    this.authService.RemoveProfile(profile)
+    this.profiles = this.authService.GetProfiles()
+  }
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
-      username: [null, [Validators.required]],
-      password: [null, [Validators.required]]
+      endpoints: [null, [Validators.required]],
     });
+    this.profiles = this.authService.GetProfiles()
   }
   ngOnDestroy(): void {
-    
+
   }
 }

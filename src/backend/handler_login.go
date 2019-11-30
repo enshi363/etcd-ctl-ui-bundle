@@ -8,9 +8,10 @@ import (
 
 // Binding from JSON
 type User struct {
-	User     string `form:"user" json:"user" xml:"user"  binding:"required"`
-	Password string `form:"password" json:"password" xml:"password" binding:"required"`
-	Role     string `form:"role" json:"role" xml:"role"`
+	User      string   `form:"user" json:"user" xml:"user"  binding:"required"`
+	Password  string   `form:"password" json:"password" xml:"password" binding:"required"`
+	Role      string   `form:"role" json:"role" xml:"role"`
+	Endpoints []string `form:"endpoints" json:"endpoints" xml:"endpoints"`
 }
 
 func (handler *httpHanlder) login(c *gin.Context) {
@@ -19,14 +20,14 @@ func (handler *httpHanlder) login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	client, err := NewEtcdClient(json.User, json.Password)
+	client, err := NewEtcdClient(json.User, json.Password, json.Endpoints)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 	defer client.Close()
 
-	tokenString, err := authMiddleware.MakeCredential(json.User, json.Password)
+	tokenString, err := authMiddleware.MakeCredential(json.User, json.Password, json.Endpoints)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return

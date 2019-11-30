@@ -1,33 +1,27 @@
 <div class="login-container">
-  <div class="logo">
-    <img src="https://cdn.freebiesupply.com/logos/large/2x/etcd-logo-png-transparent.png" alt="" style="width:90%;">
-  </div>
   <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+    <nz-form-item>
+      <h3>Please Enter endpoints to connect etcd cluster</h3>
+    </nz-form-item>
     <nz-form-item>
       <span class="error">{{errors}}</span>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-control nzErrorTip="username required">
-        <nz-input-group [nzPrefix]="prefixUser" nzSize="large">
-          <input type="text" nz-input formControlName="username" placeholder="UserName">
+      <nz-form-control nzErrorTip="endpoints required" nzExtra="endpoint format:[user:password@]endpoint,endpoint2..." >
+        <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+          <input type="text" nz-input [nzAutocomplete]="auto" (input)="onInput($event.target?.value)" formControlName="endpoints" placeholder="[user:password@]endpoint,endpoint2..." />
+          
         </nz-input-group>
-        <ng-template #prefixUser><i nz-icon nzType="user" nzTheme="outline"></i></ng-template>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-control nzErrorTip="password required">
-        <nz-input-group [nzPrefix]="prefixPassword" nzSize="large">
-          <input type="text" nz-input formControlName="password" placeholder="Password">
-        </nz-input-group>
-        <ng-template #prefixPassword><i nz-icon nzType="lock" nzTheme="outline"></i></ng-template>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-control>
-
-        <button nz-button class="login-form-button" nzSize="large" [nzType]="'primary'">SignIn</button>
+        <ng-template #suffixIconButton>
+          <button nz-button nzType="primary" nzSearch [nzLoading]="loading"><i nz-icon nzType="arrow-right"></i></button>
+        </ng-template>
+      <nz-autocomplete nzBackfill #auto>
+          <nz-auto-option *ngFor="let profile of profiles" [nzValue]="profile">
+            {{ profile }}
+            <a class="remove-link" (click)="remove(profile)">remove</a>
+          </nz-auto-option>
+        </nz-autocomplete>
       </nz-form-control>
     </nz-form-item>
   </form>
-  <div style="clear:both;"></div>
 </div>

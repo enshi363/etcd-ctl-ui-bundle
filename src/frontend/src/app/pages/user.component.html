@@ -4,7 +4,7 @@
 </button>
 
 <nz-list class="demo-loadmore-list" [nzDataSource]="users" [nzItemLayout]="'horizontal'" [nzLoading]="loading"
-  [nzRenderItem]="item" [nzLoadMore]="loadMore">
+  [nzRenderItem]="item" >
   <ng-template #item let-item >
     <nz-list-item [nzActions]="[editAction, moreAction]" *ngIf="item!='root'">
       <nz-skeleton [nzAvatar]="true" [nzActive]="true" [nzTitle]="false" [nzLoading]="loading">

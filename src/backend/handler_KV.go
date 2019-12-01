@@ -99,6 +99,7 @@ func (handler *httpHanlder) GetConfigList(c *gin.Context) {
 	}
 	result := []string{}
 	dirMap := map[string]bool{}
+	prefix, _ = path.Split(prefix)
 	for _, k := range resp.Kvs {
 		dir, file := path.Split(string(k.Key))
 		//fmt.Println(dir, file)

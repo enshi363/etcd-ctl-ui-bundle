@@ -56,5 +56,10 @@ func routerHandler() http.Handler {
 	admin.DELETE("/kv/*key", handler.RemoveConfig)
 	admin.GET("/kv/*key", handler.GetConfig)
 
+	e.NoRoute(func(c *gin.Context) {
+		if strings.HasPrefix(c.Request.URL.RequestURI(), "/webui") {
+			c.Data(200, "text/html", []byte(s))
+		}
+	})
 	return MethodOverride(e)
 }

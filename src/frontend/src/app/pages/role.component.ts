@@ -30,6 +30,7 @@ export class RoleComponent implements OnInit, OnDestroy {
   isOkLoading = false;
   validateForm: FormGroup;
   errors = "";
+  PermissionDenied = false;
   constructor(
     private location: Location,
     private roleService: RoleService,
@@ -57,6 +58,7 @@ export class RoleComponent implements OnInit, OnDestroy {
       this.loading = false;
       this.roles = res.roles
     },(err)=>{
+      this.PermissionDenied = true
       this.loading = false;
     })
   }

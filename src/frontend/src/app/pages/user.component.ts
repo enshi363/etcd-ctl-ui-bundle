@@ -33,6 +33,7 @@ export class UserComponent implements OnInit, OnDestroy {
   errors = "";
   isEdit = false;
   editUserName = "";
+  PermissionDenied = false;
   constructor(
     private location: Location,
     private userService: UserService,
@@ -62,6 +63,9 @@ export class UserComponent implements OnInit, OnDestroy {
       this.users = res.users;
       // console.log(res)
     },(err)=>{
+      if (err.status==403){
+        this.PermissionDenied = true
+      }
       this.loading = false;
     })
   }

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"go.etcd.io/etcd/clientv3"
@@ -22,6 +23,10 @@ func (handler *httpHanlder) AddUser(c *gin.Context) {
 	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	if _, err := cli.UserAdd(context.TODO(), json.User, json.Password); err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -41,6 +46,10 @@ func (handler *httpHanlder) GrantUserRole(c *gin.Context) {
 		c.Param("username"),
 		c.Param("role"),
 	); err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -60,6 +69,10 @@ func (handler *httpHanlder) RevokeUserRole(c *gin.Context) {
 		c.Param("username"),
 		c.Param("role"),
 	); err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -78,6 +91,10 @@ func (handler *httpHanlder) RemoveUser(c *gin.Context) {
 		context.TODO(),
 		c.Param("username"),
 	); err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -96,6 +113,10 @@ func (handler *httpHanlder) GetUserList(c *gin.Context) {
 		context.TODO(),
 	)
 	if err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -116,6 +137,10 @@ func (handler *httpHanlder) GetUser(c *gin.Context) {
 		c.Param("username"),
 	)
 	if err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -141,6 +166,10 @@ func (handler *httpHanlder) ChangePassword(c *gin.Context) {
 		json.User,
 		json.Password,
 	); err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

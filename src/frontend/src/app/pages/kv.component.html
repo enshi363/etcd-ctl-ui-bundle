@@ -1,18 +1,31 @@
-<button nz-button nzType="primary" (click)="CreateKV()" class="head-action">
-  <i nz-icon nzType="user-add" nzTheme="outline"></i>Add Config
-</button>
 
-<nz-list [nzDataSource]="kvs" [nzItemLayout]="'horizontal'" [nzLoading]="loading"
-  [nzRenderItem]="item" >
-  <ng-template #item let-item >
-    <nz-list-item [nzActions]="[editAction, moreAction]" >
+<div nz-row class="head-action">
+  <div nz-col nzSpan="6">
+    <button nz-button nzType="primary" (click)="CreateKV()">
+      <i nz-icon nzType="user-add" nzTheme="outline"></i>Add Config
+    </button>
+  </div>
+  <div nz-col nzSpan="12" nzOffset="6">
+    <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+      <input type="text" nz-input #search placeholder="enter you prefix"  (keyup)="updatePrefix($event)"/>
+    </nz-input-group>
+    <ng-template #suffixIconButton>
+      <button nz-button nzType="primary" nzSearch [routerLink]="['.',{prefix:prefixKey}]" ><i nz-icon nzType="search"></i></button>
+    </ng-template>
+  </div>
+</div>
+
+<nz-list [nzDataSource]="kvs" [nzItemLayout]="'horizontal'" [nzLoading]="loading" [nzRenderItem]="item">
+  <ng-template #item let-item>
+    <nz-list-item [nzActions]="[editAction, moreAction]">
       <nz-skeleton [nzAvatar]="true" [nzActive]="true" [nzTitle]="false" [nzLoading]="loading">
         <ng-template #titleTemplate>
           <h3 *ngIf="item.type==1"><a [routerLink]="['.',{prefix:prefixKey+item.name}]">{{item.name}}</a></h3>
           <h3 *ngIf="item.type==0">{{item.name}}</h3>
         </ng-template>
         <ng-template #moreAction>
-          <a nz-popconfirm nzPopconfirmTitle="Are you sure remove this key?" (nzOnConfirm)="RemoveKey(item.name)">delete</a>
+          <a nz-popconfirm nzPopconfirmTitle="Are you sure remove this key?"
+            (nzOnConfirm)="RemoveKey(item.name)">delete</a>
         </ng-template>
         <ng-template #editAction>
           <a (click)="ModifyKV(item.name)" *ngIf="item.type==0">Edit</a></ng-template>
@@ -26,6 +39,11 @@
     </nz-list-item>
   </ng-template>
 </nz-list>
+<nz-empty [nzNotFoundContent]="contentTpl" *ngIf="!kvs" style="margin-top:15%;">
+  <ng-template #contentTpl>
+    <span>no content or you are denied to access this prefix.<a (click)="focusSearch()">Try search</a></span>
+  </ng-template>
+</nz-empty>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="KV Modification" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
   [nzOkLoading]="isOkLoading">
   <form nz-form [formGroup]="validateForm" class="login-form">
@@ -40,16 +58,16 @@
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-control >
-        <textarea  rows="4" nz-input formControlName="content" placeholder="content"></textarea>
+      <nz-form-control>
+        <textarea rows="4" nz-input formControlName="content" placeholder="content"></textarea>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-control >
-          <nz-input-group [nzAddOnBeforeIcon]="'clock-circle'">
-            <input type="number" nz-input formControlName="ttl" placeholder="" >
-          </nz-input-group>
-        </nz-form-control>
-      </nz-form-item>
+      <nz-form-control>
+        <nz-input-group [nzAddOnBeforeIcon]="'clock-circle'">
+          <input type="number" nz-input formControlName="ttl" placeholder="">
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
   </form>
 </nz-modal>

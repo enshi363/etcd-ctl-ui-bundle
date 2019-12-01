@@ -36,6 +36,10 @@ func (handler *httpHanlder) PutConfig(c *gin.Context) {
 	_, err := cli.Put(ctx, data.Key, data.Content)
 	cancel()
 	if err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -56,6 +60,10 @@ func (handler *httpHanlder) RemoveConfig(c *gin.Context) {
 	_, err := cli.Delete(ctx, c.Param("key"), clientv3.WithPrefix())
 
 	if err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -82,6 +90,10 @@ func (handler *httpHanlder) GetConfigList(c *gin.Context) {
 	defer cancel()
 	resp, err := cli.Get(ctx, prefix, opts...)
 	if err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -89,7 +101,7 @@ func (handler *httpHanlder) GetConfigList(c *gin.Context) {
 	dirMap := map[string]bool{}
 	for _, k := range resp.Kvs {
 		dir, file := path.Split(string(k.Key))
-		fmt.Println(dir, file)
+		//fmt.Println(dir, file)
 		if file != "" && dir == prefix {
 			result = append(result, file)
 		}
@@ -126,6 +138,10 @@ func (handler *httpHanlder) GetConfig(c *gin.Context) {
 	defer cancel()
 	resp, err := cli.Get(ctx, c.Param("key"), opts...)
 	if err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

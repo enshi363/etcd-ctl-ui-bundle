@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"go.etcd.io/etcd/clientv3"
@@ -30,6 +31,10 @@ func (handler *httpHanlder) AddRole(c *gin.Context) {
 	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	if _, err := cli.RoleAdd(context.TODO(), json.Name); err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -56,6 +61,10 @@ func (handler *httpHanlder) GrantRolePermission(c *gin.Context) {
 		json.End,  // range end
 		clientv3.PermissionType(json.Type),
 	); err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -81,6 +90,10 @@ func (handler *httpHanlder) RevokeRolePermission(c *gin.Context) {
 		json.Key,  // key
 		json.End,  // range end
 	); err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -99,6 +112,10 @@ func (handler *httpHanlder) RemoveRole(c *gin.Context) {
 		context.TODO(),
 		c.Param("role"), // role name
 	); err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -117,6 +134,10 @@ func (handler *httpHanlder) GetRoleList(c *gin.Context) {
 		context.TODO(),
 	)
 	if err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -137,6 +158,10 @@ func (handler *httpHanlder) GetRole(c *gin.Context) {
 		c.Param("role"),
 	)
 	if err != nil {
+		if strings.Contains(err.Error(), "permission denied") {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

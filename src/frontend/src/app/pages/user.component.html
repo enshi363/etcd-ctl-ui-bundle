@@ -1,8 +1,12 @@
 <!-- <nz-page-header (nzBack)="onBack()" nzBackIcon nzTitle="Users" nzSubtitle="You can manage Users"> </nz-page-header> -->
-<button nz-button nzType="primary" (click)="CreateUser()" class="head-action">
+<button nz-button nzType="primary" (click)="CreateUser()" class="head-action" *ngIf="!PermissionDenied">
   <i nz-icon nzType="user-add" nzTheme="outline"></i>Create User
 </button>
-
+<nz-result nzStatus="403" nzTitle="403" nzSubTitle="Sorry, you are not authorized to access this page." *ngIf="PermissionDenied">
+  <div nz-result-extra>
+    <button nz-button nzType="primary" [routerLink]="['/status']">back</button>
+  </div>
+</nz-result>
 <nz-list class="demo-loadmore-list" [nzDataSource]="users" [nzItemLayout]="'horizontal'" [nzLoading]="loading"
   [nzRenderItem]="item" >
   <ng-template #item let-item >

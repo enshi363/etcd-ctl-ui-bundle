@@ -23,7 +23,7 @@ func routerHandler() http.Handler {
 	if err != nil {
 		log.Fatal(err)
 	}
-	box.AddString("index.html", strings.Replace(s, "BASEURI=\"/api\"", "BASEURI=\""+Env.GetBaseURI()+"\"", -1))
+	box.AddString("index.html", strings.Replace(s, "BASEURI=\"/api\"", "BASEURI=\""+strings.TrimSuffix(Env.GetBaseURI(), "/")+"\"", -1))
 	e.StaticFS("/webui", box)
 
 	//e.Static(Env.GetBaseURI()+"/assets", "./assets")

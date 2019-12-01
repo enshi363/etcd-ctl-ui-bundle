@@ -27,7 +27,7 @@ export class HttpInterCeptor implements HttpInterceptor {
     let url = req.url
     const authReq = req.clone({url, headers: req.headers.set('Authorization', this._credential), params, withCredentials: true});
     return next.handle(authReq).pipe(catchError((error: HttpErrorResponse) => {
-      if ((error.status === 401 || error.status === 403) && this.redirected === false) {
+      if ((error.status === 401 ) && this.redirected === false) {
         this.redirected = true;
         
         this.router.navigate(['/login']);

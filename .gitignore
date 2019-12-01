@@ -1,2 +1,4 @@
 package-lock.json
 src/backend/static
+main-packr.go
+src/backend/packrd

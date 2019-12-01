@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild,ElementRef} from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { Location } from '@angular/common';
@@ -36,6 +36,9 @@ export class KvComponent implements OnInit, OnDestroy {
   errors = "";
   prefixKey = "/";
   isEdit = true; 
+  searchPrefix=""
+  @ViewChild('search',{static:true}) searchElement: ElementRef;
+
   constructor(
     private location: Location,
     private kvService: KvService,
@@ -55,11 +58,19 @@ export class KvComponent implements OnInit, OnDestroy {
       ttl: [null],
     });
   }
+  updatePrefix($event):void{
+    if ($event.target.value.charAt(0)!="/" && $event.target.value){
+      $event.target.value = "/" + $event.target.value
+    }
+    this.prefixKey = $event.target.value || "/"
+  }
   handleCancel(): void {
     this.isVisible = false;
     this.isEdit = false;
   }
-
+  focusSearch(){
+    this.searchElement.nativeElement.focus();
+  }
   ngOnInit(): void {
     this.activatedRoute.params.pipe(delay(300)).subscribe(res => {
       this.prefixKey = res.prefix || "/"

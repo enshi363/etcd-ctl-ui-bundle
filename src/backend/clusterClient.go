@@ -9,12 +9,16 @@ import (
 )
 
 func NewEtcdClient(user, password string, endpoints []string) (*clientv3.Client, error) {
-	cli, err := clientv3.New(clientv3.Config{
+	config := clientv3.Config{
 		Endpoints:   endpoints,
 		DialTimeout: 10 * time.Second,
-		Username:    user,
-		Password:    password,
-	})
+	}
+	if user != "" {
+		config.Username = user
+		config.Password = password
+	}
+
+	cli, err := clientv3.New(config)
 	return cli, err
 }
 

@@ -8,8 +8,8 @@ import (
 
 // Binding from JSON
 type User struct {
-	User      string   `form:"user" json:"user" xml:"user"  binding:"required"`
-	Password  string   `form:"password" json:"password" xml:"password" binding:"required"`
+	User      string   `form:"user" json:"user" xml:"user"`
+	Password  string   `form:"password" json:"password" xml:"password"`
 	Role      string   `form:"role" json:"role" xml:"role"`
 	Endpoints []string `form:"endpoints" json:"endpoints" xml:"endpoints"`
 }

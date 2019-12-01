@@ -56,9 +56,9 @@ services:
     image: alpine 
     hostname: etcd-web
     ports:
-      - 8080:8080
+      - 8088:8088
     tty: true
     stdin_open: true
     environment:
       - ENDPOINTS=http://etcd-01:2379,http://etcd-02:2379,http://etcd-03:2379
-    command: /bin/sh
+    command: wget https://github.com/enshi363/etcd-ctl-ui-bundle/releases/download/untagged-d01e4464df6c91815076/etcd-webui-linux-amd64 && ./etcd-webui-linux-amd64  

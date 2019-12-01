@@ -1,4 +1,4 @@
-# etcd client webui with v3 api support
+# etcd client webui with v3 api support (base on [etcd/clientv3](https://godoc.org/go.etcd.io/etcd/clientv3))
 
 ## setup
 
@@ -38,3 +38,11 @@ then enjoy
 
 ![role-grant-permission](screenshots/role-grant-permission.png)
 
+
+## Thanks
+
+[Gin Web Framework](https://github.com/gin-gonic/gin)
+
+[Angularjs](https://angular.io)
+
+[Antd](https://ng.ant.design)

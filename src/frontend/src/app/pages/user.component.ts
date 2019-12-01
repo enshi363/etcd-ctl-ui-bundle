@@ -80,8 +80,9 @@ export class UserComponent implements OnInit, OnDestroy {
     this.isEdit = false;
   }
   CreateUser(): void {
-    this.isEdit = false;
     this.validateForm.reset()
+    this.isEdit = false;
+    this.validateForm.get("userName").enable()
     this.isVisible = true;
     this.isOkLoading = false;
     this.errors = "";

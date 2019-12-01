@@ -25,15 +25,16 @@ func (handler *httpHanlder) PutConfig(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	//if err != nil {
-	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-	//return
-	//}
+	opts := []clientv3.OpOption{}
 	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
+	if data.TTL > 0 {
+		if resp, err := cli.Grant(context.TODO(), data.TTL); err == nil {
+			opts = append(opts, clientv3.WithLease(resp.ID))
+		}
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	_, err := cli.Put(ctx, data.Key, data.Content)
+	_, err := cli.Put(ctx, data.Key, data.Content, opts...)
 	cancel()
 	if err != nil {
 		if strings.Contains(err.Error(), "permission denied") {

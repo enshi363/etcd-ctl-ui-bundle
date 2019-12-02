@@ -28,6 +28,10 @@ func (handler *httpHanlder) AddRole(c *gin.Context) {
 	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
 	//return
 	//}
+	if json.Name == "root" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "can not add role root,please set manully on your etcd server"})
+		return
+	}
 	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	if _, err := cli.RoleAdd(context.TODO(), json.Name); err != nil {

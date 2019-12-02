@@ -9,11 +9,6 @@ import (
 )
 
 func (handler *httpHanlder) ClusterMembers(c *gin.Context) {
-	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	//if err != nil {
-	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-	//return
-	//}
 	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	resp, err := cli.MemberList(context.Background())
@@ -21,6 +16,27 @@ func (handler *httpHanlder) ClusterMembers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	//memberjson, _ := json.Marshal(resp.Members)
 	c.JSON(http.StatusOK, gin.H{"members": resp.Members})
+}
+
+func (handler *httpHanlder) ClusterAuthEnable(c *gin.Context) {
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
+	defer cli.Close()
+	_, err := cli.AuthEnable(context.Background())
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": ":)"})
+}
+
+func (handler *httpHanlder) ClusterAuthDisable(c *gin.Context) {
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
+	defer cli.Close()
+	_, err := cli.AuthDisable(context.Background())
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": ":)"})
 }

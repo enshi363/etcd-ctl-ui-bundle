@@ -40,6 +40,7 @@ export class AuthService {
   // parse profile string from user:password@endpoint,endpoint2 
   parseProfileString(profileString:string):Profile{
     let profile :Profile = {endpoints:"",username:"",password:""};
+    if (!profileString) return profile 
     if (profileString.indexOf("@")==-1){
       profile.endpoints = profileString
       return profile;

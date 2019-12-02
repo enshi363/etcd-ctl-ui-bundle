@@ -15,11 +15,10 @@ func (handler *httpHanlder) AddUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	//if err != nil {
-	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-	//return
-	//}
+	if json.User == "root" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "cannot add root ,please set manully on your etcd server"})
+		return
+	}
 	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	if _, err := cli.UserAdd(context.TODO(), json.User, json.Password); err != nil {
@@ -34,11 +33,6 @@ func (handler *httpHanlder) AddUser(c *gin.Context) {
 }
 
 func (handler *httpHanlder) GrantUserRole(c *gin.Context) {
-	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	//if err != nil {
-	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-	//return
-	//}
 	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	if _, err := cli.UserGrantRole(
@@ -53,15 +47,13 @@ func (handler *httpHanlder) GrantUserRole(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	//if c.Param("username") == "root" && c.Param("role") == "root" {
+	//cli.AuthEnable(context.TODO())
+	//}
 	c.JSON(http.StatusOK, gin.H{"message": ":)"})
 }
 
 func (handler *httpHanlder) RevokeUserRole(c *gin.Context) {
-	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	//if err != nil {
-	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-	//return
-	//}
 	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
 	if _, err := cli.UserRevokeRole(
@@ -80,13 +72,15 @@ func (handler *httpHanlder) RevokeUserRole(c *gin.Context) {
 }
 
 func (handler *httpHanlder) RemoveUser(c *gin.Context) {
-	//cli, err := NewEtcdClient(c.MustGet("user.name").(string), c.MustGet("user.password").(string))
-	//if err != nil {
-	//c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-	//return
-	//}
 	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
+	//if c.Param("username") == "root" {
+	//root then try disable auth
+	//if _, err := cli.AuthDisable(context.TODO()); err != nil {
+	//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	//return
+	//}
+	//}
 	if _, err := cli.UserDelete(
 		context.TODO(),
 		c.Param("username"),

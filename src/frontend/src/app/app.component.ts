@@ -21,12 +21,11 @@ export class AppComponent {
     ) {
         this.bService.GetCrumbData().subscribe(res=>{
             this.breads = res
+            let p = this.authService.parseProfileString(this.authService.GetCurrentProfile())
+            this.profile = p.username+"@"+p.endpoints
         })
     }
     ngOnInit():void{
-        let p = this.authService.parseProfileString(this.authService.GetCurrentProfile())
-        this.profile = p.username+"@"+p.endpoints
-        // console.log(this.activateRoute.component)
     }
     switchProfile():void{
         this.authService.ClearAuth();

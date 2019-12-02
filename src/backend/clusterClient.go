@@ -17,7 +17,6 @@ func NewEtcdClient(user, password string, endpoints []string) (*clientv3.Client,
 		config.Username = user
 		config.Password = password
 	}
-
 	cli, err := clientv3.New(config)
 	return cli, err
 }

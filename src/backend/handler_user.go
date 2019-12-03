@@ -15,12 +15,13 @@ func (handler *httpHanlder) AddUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	cli := c.MustGet("etcdClient").(*clientv3.Client)
+	defer cli.Close()
 	if json.User == "root" {
 		c.JSON(http.StatusForbidden, gin.H{"error": "cannot add root ,please set manully on your etcd server"})
 		return
+
 	}
-	cli := c.MustGet("etcdClient").(*clientv3.Client)
-	defer cli.Close()
 	if _, err := cli.UserAdd(context.TODO(), json.User, json.Password); err != nil {
 		if strings.Contains(err.Error(), "permission denied") {
 			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})

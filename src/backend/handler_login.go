@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"go.etcd.io/etcd/etcdserver/api/v3rpc/rpctypes"
 )
 
 // Binding from JSON
@@ -21,6 +22,10 @@ func (handler *httpHanlder) login(c *gin.Context) {
 		return
 	}
 	client, err := NewEtcdClient(json.User, json.Password, json.Endpoints)
+	if err == rpctypes.ErrGRPCAuthNotEnabled {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return

@@ -38,6 +38,7 @@ export class UserComponent implements OnInit, OnDestroy {
     private location: Location,
     private userService: UserService,
     private fb: FormBuilder,
+    private router:Router,
     private message: NzMessageService,
     private modalService: NzModalService,
     private bService:BreadCrumbService
@@ -98,9 +99,15 @@ export class UserComponent implements OnInit, OnDestroy {
     this.editUserName = username
   }
   RemoveUser(username:string):void{
+    this.loading = true;
     this.userService.RemoveUser(username).subscribe(res=>{
-      this.loadUsers();
+      if(username=="root"){
+        this.router.navigateByUrl("/login");
+      }else{
+        this.loadUsers();
+      }
     },err=>{
+      this.loading = false;
       this.message.create('error', err.error.error);
     })
   }

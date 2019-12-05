@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"strings"
 
@@ -17,17 +18,33 @@ func (handler *httpHanlder) AddUser(c *gin.Context) {
 	}
 	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
-	if json.User == "root" {
-		c.JSON(http.StatusForbidden, gin.H{"error": "cannot add root ,please set manully on your etcd server"})
-		return
-
-	}
 	if _, err := cli.UserAdd(context.TODO(), json.User, json.Password); err != nil {
 		if strings.Contains(err.Error(), "permission denied") {
 			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
 			return
 		}
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if json.User == "root" {
+		// c.JSON(http.StatusForbidden, gin.H{"error": "cannot add root ,please set manully on your etcd server"})
+		// return
+		var err error
+		for err == nil {
+			if _, err = cli.AuthEnable(context.Background()); err == nil {
+				break
+			}
+			log.Println(err)
+			if strings.Contains(err.Error(), "root user does not have root role") {
+				//if err == rpctypes.ErrRootRoleNotExist {
+				if _, err = cli.RoleAdd(context.Background(), "root"); err != nil && !strings.Contains(err.Error(), "role name already exists") {
+					break
+				}
+				if _, err = cli.UserGrantRole(context.Background(), "root", "root"); err != nil {
+					break
+				}
+			}
+		}
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": ":)"})
@@ -75,13 +92,15 @@ func (handler *httpHanlder) RevokeUserRole(c *gin.Context) {
 func (handler *httpHanlder) RemoveUser(c *gin.Context) {
 	cli := c.MustGet("etcdClient").(*clientv3.Client)
 	defer cli.Close()
-	//if c.Param("username") == "root" {
-	//root then try disable auth
-	//if _, err := cli.AuthDisable(context.TODO()); err != nil {
-	//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	//return
-	//}
-	//}
+	if c.Param("username") == "root" {
+		//root then try disable auth
+		if _, err := cli.AuthDisable(context.TODO()); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+	cli, _ = NewEtcdClient("", "", cli.Endpoints())
+
 	if _, err := cli.UserDelete(
 		context.TODO(),
 		c.Param("username"),

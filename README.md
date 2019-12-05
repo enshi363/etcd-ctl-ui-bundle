@@ -4,6 +4,16 @@
 
 download prebuild file from [release page](https://github.com/enshi363/etcd-ctl-ui-bundle/releases)
 
+
+## Quick Experience
+
+``` shell
+docker-compose up -d
+
+```
+open browser with http://localhost:8088/webui
+
+
 ## usage
 
 ``` shell
@@ -12,7 +22,7 @@ export ETCD_UI_LISTEN_PORT=:8088
 # jwt secret key
 export ETCD_UI_SECRET=xxxxx
 
-etcd-webui 
+etcd-webui-linux-amd64
 
 ```
 

@@ -10,12 +10,16 @@
 <nz-list class="demo-loadmore-list" [nzDataSource]="users" [nzItemLayout]="'horizontal'" [nzLoading]="loading"
   [nzRenderItem]="item" >
   <ng-template #item let-item >
-    <nz-list-item [nzActions]="[editAction, moreAction]" *ngIf="item!='root'">
+    <nz-list-item [nzActions]="[editAction, moreAction]" >
       <nz-skeleton [nzAvatar]="true" [nzActive]="true" [nzTitle]="false" [nzLoading]="loading">
         <ng-template #editAction><a (click)="modify(item)">modify</a></ng-template>
         <ng-template #titleTemplate><h3>{{item}}</h3></ng-template>
-        <ng-template #moreAction><a nz-popconfirm nzPopconfirmTitle="Are you sure remove this user?"
-            (nzOnConfirm)="RemoveUser(item)">delete</a></ng-template>
+        <ng-template #moreAction>
+          <a nz-popconfirm *ngIf="item!='root'" nzPopconfirmTitle="Are you sure remove this user?"
+            (nzOnConfirm)="RemoveUser(item)">delete</a>
+          <a nz-popconfirm *ngIf="item =='root'" nzPopconfirmTitle="After delete root user,server authentication will be disabled, are you sure?"
+            (nzOnConfirm)="RemoveUser(item)">delete</a>
+        </ng-template>
         <ng-template #avatarTemplate>
           <nz-avatar nzIcon="user"></nz-avatar>
         </ng-template>
@@ -33,6 +37,7 @@
   <form nz-form [formGroup]="validateForm" class="login-form">
     <nz-form-item>
       <span class="error">{{errors}}</span>
+      <nz-alert *ngIf="validateForm.get('userName').value=='root'" nzType="warning" nzMessage="you are adding root user,authentication will be enabled automatically"></nz-alert>
     </nz-form-item>
     <nz-form-item>
       <nz-form-control nzErrorTip="user name required">
